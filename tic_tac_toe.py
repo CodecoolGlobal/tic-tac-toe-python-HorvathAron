@@ -1,6 +1,14 @@
+from emoji import emojize
+
+
 def init_board():
     """Returns an empty 3-by-3 board (with .)."""
     board = []
+    for n in range(3):
+        row = []
+        for i in range(3):
+            row.append(".")
+        board.append(row)
     return board
 
 
@@ -56,6 +64,7 @@ def tictactoe_game(mode='HUMAN-HUMAN'):
 def main_menu():
     tictactoe_game('HUMAN-HUMAN')
 
+print(init_board())
 
 if __name__ == '__main__':
     main_menu()
