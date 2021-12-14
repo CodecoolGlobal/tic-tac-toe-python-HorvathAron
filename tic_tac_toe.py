@@ -40,8 +40,9 @@ def is_full(board):
 
 
 def print_board(board):
-    """Prints a 3-by-3 board on the screen with borders."""
+    """Prints a 3-by-3 board on the screen with borders. - FILÓ"""
     pass
+
 
 
 def print_result(winner):
@@ -64,7 +65,7 @@ def tictactoe_game(mode='HUMAN-HUMAN'):
 def main_menu():
     tictactoe_game('HUMAN-HUMAN')
 
-print(init_board())
+board = init_board()
 
 if __name__ == '__main__':
     main_menu()
