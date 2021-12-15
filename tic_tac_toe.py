@@ -45,9 +45,10 @@ def get_move(board, player):
     
 def switch_player(player):
     if player == "X":
-        player = "O"
+        next_player = "O"
     else:
-        player = "X"
+        next_player = "X"
+    player = next_player
     return player
 
 def get_ai_move(board, player):
@@ -98,7 +99,7 @@ def tictactoe_game(mode='HUMAN-HUMAN'):
         print_board(board)
         row, col = get_move(board, player)
         mark(board, player, row, col)
-        switch_player(player)
+        player = switch_player(player)
         is_full(board)
         has_won(board,player)
 
