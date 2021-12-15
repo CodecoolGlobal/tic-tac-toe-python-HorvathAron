@@ -55,7 +55,27 @@ def is_full(board):
 
 def print_board(board):
     """Prints a 3-by-3 board on the screen with borders. - FILÓ"""
-    pass
+    a1 = str(board[0][0])
+    a2 = str(board[0][1])
+    a3 = str(board[0][2])
+    b1 = str(board[1][0])
+    b2 = str(board[1][1])
+    b3 = str(board[1][2])
+    c1 = str(board[2][0])
+    c2 = str(board[2][1])
+    c3 = str(board[2][2])
+    board_line1 = ["   1","   2","   3"]
+    board_line2 = ["A  ",a1," | ",a2," | ",a3]
+    board_line3 = ["  ---+---+---"]
+    board_line4 = ["B  ",b1," | ",b2," | ",b3]
+    board_line5 = ["  ---+---+---"]
+    board_line6 = ["C  ",c1," | ",c2," | ",c3]
+    print("".join(board_line1))
+    print("".join(board_line2))
+    print("".join(board_line3))
+    print("".join(board_line4))
+    print("".join(board_line5))
+    print("".join(board_line6))
 
 
 
