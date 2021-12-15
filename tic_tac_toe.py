@@ -14,8 +14,22 @@ def init_board():
 
 def get_move(board, player):
     """Returns the coordinates of a valid move for player on board."""
-    row, col = 0, 0
-    return row, col
+    while True:
+        rows = ["A", "B", "C"]
+        columns = ["1", "2", "3"]
+        player_input = input("Choose a row (A, B, C) and column (1,2,3)!")
+        player_input = player_input.upper()
+        if len(player_input) != 2 or not player_input[0] in rows \
+            or not player_input[1] in columns:
+            print("Invalid input, use a letter-number combo in range A-B-C 1-2-3")
+            continue
+        row = rows.index(player_input[0])
+        col = columns.index(player_input[1])
+        if board[row][col] != ".":
+            print("Cell taken, pls try again")
+            continue
+        return row, col
+    
 
 
 def get_ai_move(board, player):
@@ -66,7 +80,7 @@ def tictactoe_game(mode='HUMAN-HUMAN'):
 def main_menu():
     tictactoe_game('HUMAN-HUMAN')
 
-board = init_board()
-
 if __name__ == '__main__':
-    main_menu()
+    board = init_board()
+    player = 1
+    print(get_move(board, player))
