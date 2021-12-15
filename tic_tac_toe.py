@@ -1,5 +1,18 @@
 from emoji import emojize
 
+def get_player():
+    while True:
+        options = "AB"
+        choose_player = input("Choose a character: Bubbles emoji (B) or Amoeba Boys emoji (A): ")
+        choose_player = choose_player.upper()
+        if len(choose_player) !=1 or not choose_player in options:
+            print("Invalid input, please type B or A")
+            continue
+        if choose_player == "A":
+            player = "X"
+        else:
+            player = "O"
+        return player
 
 def init_board():
     """Returns an empty 3-by-3 board (with .)."""
@@ -30,7 +43,12 @@ def get_move(board, player):
             continue
         return row, col
     
-
+def switch_player(player):
+    if player == "X":
+        player = "O"
+    else:
+        player = "X"
+    return player
 
 def get_ai_move(board, player):
     """Returns the coordinates of a valid move for player on board."""
@@ -40,7 +58,7 @@ def get_ai_move(board, player):
 
 def mark(board, player, row, col):
     """Marks the element at row & col on the board for player."""
-    pass
+    board[row][col] = player
 
 
 def has_won(board, player):
@@ -55,29 +73,16 @@ def is_full(board):
 
 def print_board(board):
     """Prints a 3-by-3 board on the screen with borders. - FILÓ"""
-    a1 = str(board[0][0])
-    a2 = str(board[0][1])
-    a3 = str(board[0][2])
-    b1 = str(board[1][0])
-    b2 = str(board[1][1])
-    b3 = str(board[1][2])
-    c1 = str(board[2][0])
-    c2 = str(board[2][1])
-    c3 = str(board[2][2])
-    board_line1 = ["   1","   2","   3"]
-    board_line2 = ["A  ",a1," | ",a2," | ",a3]
-    board_line3 = ["  ---+---+---"]
-    board_line4 = ["B  ",b1," | ",b2," | ",b3]
-    board_line5 = ["  ---+---+---"]
-    board_line6 = ["C  ",c1," | ",c2," | ",c3]
-    print("".join(board_line1))
-    print("".join(board_line2))
-    print("".join(board_line3))
-    print("".join(board_line4))
-    print("".join(board_line5))
-    print("".join(board_line6))
-
-
+    letters = "ABC"
+    print()
+    print("   1   2   3")
+    for ind, line in enumerate(board):
+        print(letters[ind], end="  ")
+        print(" | ".join(line))
+        if ind != 2:
+            print("  ---+---+---")
+    print()
+    
 
 def print_result(winner):
     """Congratulates winner or proclaims tie (if winner equals zero)."""
@@ -86,21 +91,20 @@ def print_result(winner):
 
 def tictactoe_game(mode='HUMAN-HUMAN'):
     board = init_board()
-
+    player = get_player()
     # use get_move(), mark(), has_won(), is_full(), and print_board() to create game logic
     # ez egy komment!
-    print_board(board)
-    row, col = get_move(board, 1)
-    mark(board, 1, row, col)
-
-    winner = 0
-    print_result(winner)
+    while is_full(board) == False:
+        print_board(board)
+        row, col = get_move(board, player)
+        mark(board, player, row, col)
+        switch_player(player)
+        is_full(board)
+        has_won(board,player)
 
 
 def main_menu():
     tictactoe_game('HUMAN-HUMAN')
 
 if __name__ == '__main__':
-    board = init_board()
-    player = 1
-    print(get_move(board, player))
+    main_menu()
