@@ -77,10 +77,16 @@ def has_won(board, player):
 
 def is_full(board):
     """Returns True if board is full."""
-    if "." == (board[0][0] or board[0][1] or board[0][2] or board[1][0] or board[1][1] or board[1][2] or board[2][0] or board[2][1] or board[2][2]):
-        return False
-    else:
+    num = 0
+    for line in board:
+        if "." in line:
+            num += 1
+    if num == 0:
         return True
+    else:
+        return False
+    #if "." == (board[0][0] or board[0][1] or board[0][2] or board[1][0] or board[1][1] or board[1][2] or board[2][0] or board[2][1] or board[2][2]):
+        #return False
 
 
 def print_board(board):
@@ -98,7 +104,10 @@ def print_board(board):
 
 def print_result(winner):
     """Congratulates winner or proclaims tie (if winner equals zero)."""
-    pass
+    if winner == 0:
+        print("GAME OVER")
+    else:
+        print(f"Congrats {winner}, you win!")
 
 
 
@@ -108,12 +117,16 @@ def tictactoe_game(mode='HUMAN-HUMAN'):
     # use get_move(), mark(), has_won(), is_full(), and print_board() to create game logic
     # ez egy komment!
     while is_full(board) == False and has_won(board,player) == False:
-        player = switch_player(player)
         print_board(board)
+        player = switch_player(player)
         row, col = get_move(board, player)
         mark(board, player, row, col)
     print_board(board)
-    print("Game Over")
+    if has_won(board, player) == True:
+        winner = player
+    else:
+        winner = 0
+    print_result(winner)
     return
 
 def main_menu():
