@@ -2,6 +2,8 @@ from emoji import emojize
 import random
 import time
 import os
+from playsound import playsound
+
 
 def clearscreen():
     os.system("clear")
@@ -9,17 +11,19 @@ def clearscreen():
 def get_player():
     while True:
         options = "AB"
-        choose_player = input("Choose a character: Bubbles emoji (B) or Amoeba Boys emoji (A): ")
+        bubbles = emojize(":girl:")
+        amoeba = emojize(":alien:")
+        choose_player = input(f"Choose a character:\n\n{bubbles}Bubbles{bubbles} (B)\n\nor\n\n{amoeba}Amoeba Boys{amoeba} (A)\n\n:")
         choose_player = choose_player.upper()
         if choose_player == "QUIT":
             quit()
         if len(choose_player) !=1 or not choose_player in options:
-            print("Invalid input, please type B or A")
+            print("Invalid input, please type B or A!")
             continue
         if choose_player == "A":
-            player = "O"
+            player = emojize(":alien:")
         else:
-            player = "X"
+            player = emojize(":girl:")
         return player
 
 def init_board():
@@ -28,7 +32,7 @@ def init_board():
     for n in range(3):
         row = []
         for i in range(3):
-            row.append(".")
+            row.append("  ")
         board.append(row)
     return board
 
@@ -48,16 +52,16 @@ def get_move(board, player):
             continue
         row = rows.index(player_input[0])
         col = columns.index(player_input[1])
-        if board[row][col] != ".":
+        if board[row][col] != "  ":
             print("Cell taken, pls try again")
             continue
         return row, col
     
 def switch_player(player):
-    if player == "X":
-        next_player = "O"
+    if player == emojize(":girl:"):
+        next_player = emojize(":alien:")
     else:
-        next_player = "X"
+        next_player = emojize(":girl:")
     player = next_player
     return player
 
@@ -65,7 +69,7 @@ def can_win(board, player):
     copy_board = board[:]
     for i in range(len(copy_board)):
         for j in range(len(copy_board)):
-            if copy_board[i][j] != ".":
+            if copy_board[i][j] != "  ":
                 continue 
             else:
                 if has_won(copy_board, player):
@@ -76,15 +80,15 @@ def cell_priority(board):
     sides = [(0,1), (1,0), (1,2), (2,1)]
     while len(corners) > 0:
         cell = random.choice(corners)
-        if board[cell[0]][cell[1]] == ".":
+        if board[cell[0]][cell[1]] == "  ":
             return cell 
         corners.remove(cell)
-    if board[1][1] == ".":
+    if board[1][1] == "  ":
         cell = 1,1
         return cell
     while len(sides) > 0:
         cell = random.choice(sides)
-        if board[cell[0]][cell[1]] == ".":
+        if board[cell[0]][cell[1]] == "  ":
             return cell
         sides.remove(cell)
 
@@ -111,7 +115,6 @@ def mark(board, player, row, col):
 
 def has_won(board, player):
     """Returns True if player has won the game."""
-    board[0][0]
     if "".join(board[0]) == (player * 3) or "".join(board[1]) == (player * 3) or "".join(board[2]) == (player * 3):
         return True
     elif "".join(board[0][0] + board[1][0] + board[2][0]) == (player * 3) or "".join(board[0][1] + board[1][1] + board[2][1]) == (player * 3) or "".join(board[0][2] + board[1][2] + board[2][2]) == (player * 3):
@@ -126,7 +129,7 @@ def is_full(board):
     """Returns True if board is full."""
     num = 0
     for line in board:
-        if "." in line:
+        if "  " in line:
             num += 1
     if num == 0:
         return True
@@ -138,12 +141,12 @@ def print_board(board):
     """Prints a 3-by-3 board on the screen with borders. - FILÓ"""
     letters = "ABC"
     print()
-    print("   1   2   3")
+    print("   1     2     3")
     for ind, line in enumerate(board):
-        print(letters[ind], end="  ")
-        print(" | ".join(line))
+        print(letters[ind], end=" ")
+        print("  | ".join(line))
         if ind != 2:
-            print("  ---+---+---")
+            print("  ----+-----+----")
     print()
     
 
@@ -152,7 +155,10 @@ def print_result(winner):
     if winner == 0:
         print("GAME OVER")
     else:
-        print(f"Congrats {winner}, you win!")
+        if winner == emojize(":girl:"):
+            print(f"Congrats {winner}Bubbles{winner}, you win!")
+        else:
+            print(f"Congrats {winner}Amoeba Boys{winner}, you win!")
 
 
 
@@ -162,11 +168,12 @@ def tictactoe_game():
     mode = choose_mode()
     if mode == "HUMAN-HUMAN":
         player = get_player()
+        player = switch_player(player)
         while is_full(board) == False and has_won(board,player) == False:
             print_board(board)
+            player = switch_player(player)
             row, col = get_move(board, player)
             mark(board, player, row, col)
-            player = switch_player(player)
             clearscreen()
         print_board(board)
         if has_won(board, player) == True:
@@ -211,7 +218,7 @@ def tictactoe_game():
         else:
             winner = 0
     elif mode == "AI-AI":
-        player = "X"
+        player = emojize(":girl:")
         while is_full(board) == False and has_won(board,player) == False:
             print_board(board)
             player = switch_player(player)
