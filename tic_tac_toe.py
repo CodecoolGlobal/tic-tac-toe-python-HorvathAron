@@ -5,6 +5,7 @@ import os
 from playsound import playsound
 
 
+
 def clearscreen():
     os.system("clear")
 
@@ -48,12 +49,12 @@ def get_move(board, player):
             quit()
         if len(player_input) != 2 or not player_input[0] in rows \
             or not player_input[1] in columns:
-            print("Invalid input, use a letter-number combo in range A-B-C 1-2-3")
+            print("Invalid input, please use A/B/C for rows, and 1/2/3 for columns!")
             continue
         row = rows.index(player_input[0])
         col = columns.index(player_input[1])
         if board[row][col] != "  ":
-            print("Cell taken, pls try again")
+            print("Cell taken, please try again!")
             continue
         return row, col
     
@@ -104,8 +105,9 @@ def get_ai_move(board, player):
         if move != None:
             row, col = move
             return row, col
-    move = cell_priority(board)
-    return move
+        move = cell_priority(board)
+        row, col = move
+        return row, col
 
 
 def mark(board, player, row, col):
@@ -153,12 +155,13 @@ def print_board(board):
 def print_result(winner):
     """Congratulates winner or proclaims tie (if winner equals zero)."""
     if winner == 0:
-        print("GAME OVER")
+        print("It's a tie!")
     else:
         if winner == emojize(":girl:"):
-            print(f"Congrats {winner}Bubbles{winner}, you win!")
+            print(f"Bubbles{winner} has won!")
+            playsound("bubbles_win.mp3")
         else:
-            print(f"Congrats {winner}Amoeba Boys{winner}, you win!")
+            print(f"Amoeba Boys{winner} has won!")
 
 
 
@@ -218,7 +221,8 @@ def tictactoe_game():
         else:
             winner = 0
     elif mode == "AI-AI":
-        player = emojize(":girl:")
+        player = emojize(":alien:")
+        player = switch_player(player)
         while is_full(board) == False and has_won(board,player) == False:
             print_board(board)
             player = switch_player(player)
@@ -239,12 +243,13 @@ def tictactoe_game():
 def choose_mode():
     while True:
         options = "1234"
-        choose_mode = input("Choose mode:\n1:   2 players (human vs. human)\n2:   human vs. AI\n3:   AI vs. human\n4:   AI. vs. AI")
+        playsound("intro.mp3",False)
+        choose_mode = input("Choose mode:\n\n1   two-player (HUMAN vs. HUMAN)\n2   one-player (HUMAN vs. AI)\n3   unbeatable machine (AI vs. HUMAN)\n4   AI vs. AI\n")
         choose_mode = choose_mode.upper()
         if choose_mode == "QUIT":
             quit()
         if choose_mode == "" or len(choose_mode) !=1 or not choose_mode in options:
-            print("Invalid input, please type 1, 2, 3, or 4!")
+            print("Invalid input, please choose from options 1, 2, 3, or 4!")
             continue
         if choose_mode == "1":
             return "HUMAN-HUMAN"
