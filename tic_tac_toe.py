@@ -1,10 +1,18 @@
-#from emoji import emojize
+from emoji import emojize
+import random
+import time
+import os
+
+def clearscreen():
+    os.system("clear")
 
 def get_player():
     while True:
         options = "AB"
         choose_player = input("Choose a character: Bubbles emoji (B) or Amoeba Boys emoji (A): ")
         choose_player = choose_player.upper()
+        if choose_player == "QUIT":
+            quit()
         if len(choose_player) !=1 or not choose_player in options:
             print("Invalid input, please type B or A")
             continue
@@ -32,6 +40,8 @@ def get_move(board, player):
         columns = ["1", "2", "3"]
         player_input = input("Choose a row (A, B, C) and column (1,2,3)!")
         player_input = player_input.upper()
+        if player_input == "QUIT":
+            quit()
         if len(player_input) != 2 or not player_input[0] in rows \
             or not player_input[1] in columns:
             print("Invalid input, use a letter-number combo in range A-B-C 1-2-3")
@@ -51,10 +61,47 @@ def switch_player(player):
     player = next_player
     return player
 
+def can_win(board, player):
+    copy_board = board[:]
+    for i in range(len(copy_board)):
+        for j in range(len(copy_board)):
+            if copy_board[i][j] != ".":
+                continue 
+            else:
+                if has_won(copy_board, player):
+                    return i, j
+
+def cell_priority(board):
+    corners = [(0, 0), (0,2), (2,0), (2,2)]
+    sides = [(0,1), (1,0), (1,2), (2,1)]
+    while len(corners) > 0:
+        cell = random.choice(corners)
+        if board[cell[0]][cell[1]] == ".":
+            return cell 
+        corners.remove(cell)
+    if board[1][1] == ".":
+        cell = 1,1
+        return cell
+    while len(sides) > 0:
+        cell = random.choice(sides)
+        if board[cell[0]][cell[1]] == ".":
+            return cell
+        sides.remove(cell)
+
 def get_ai_move(board, player):
     """Returns the coordinates of a valid move for player on board."""
-    row, col = 0, 0
-    return row, col
+    move = can_win(board, player)
+    if move != None:
+        row, col = move
+        return row, col
+    else:
+        player = switch_player(player)
+        move = can_win(board, player)
+        if move != None:
+            row, col = move
+            return row, col
+    move = cell_priority(board)
+    return move
 
 
 def mark(board, player, row, col):
@@ -85,8 +132,6 @@ def is_full(board):
         return True
     else:
         return False
-    #if "." == (board[0][0] or board[0][1] or board[0][2] or board[1][0] or board[1][1] or board[1][2] or board[2][0] or board[2][1] or board[2][2]):
-        #return False
 
 
 def print_board(board):
@@ -111,26 +156,100 @@ def print_result(winner):
 
 
 
-def tictactoe_game(mode='HUMAN-HUMAN'):
-    board = init_board()
-    player = get_player()
+def tictactoe_game():
     # use get_move(), mark(), has_won(), is_full(), and print_board() to create game logic
-    # ez egy komment!
-    while is_full(board) == False and has_won(board,player) == False:
+    board = init_board()
+    mode = choose_mode()
+    if mode == "HUMAN-HUMAN":
+        player = get_player()
+        while is_full(board) == False and has_won(board,player) == False:
+            print_board(board)
+            row, col = get_move(board, player)
+            mark(board, player, row, col)
+            player = switch_player(player)
+            clearscreen()
         print_board(board)
+        if has_won(board, player) == True:
+            winner = player
+        else:
+            winner = 0
+    elif mode == "AI-HUMAN":
+        player = get_player()
+        human_player = player
+        while is_full(board) == False and has_won(board,player) == False:
+            print_board(board)
+            player = switch_player(player)
+            if human_player == player:
+                row, col = get_move(board, player)
+            else:
+                time.sleep(1)
+                row, col = get_ai_move(board, player)
+            mark(board, player, row, col)
+            clearscreen()
+        print_board(board)
+        if has_won(board, player) == True:
+            winner = player
+        else:
+            winner = 0
+    elif mode == "HUMAN-AI":
+        player = get_player()
+        human_player = player
         player = switch_player(player)
-        row, col = get_move(board, player)
-        mark(board, player, row, col)
-    print_board(board)
-    if has_won(board, player) == True:
-        winner = player
-    else:
-        winner = 0
-    print_result(winner)
+        while is_full(board) == False and has_won(board,player) == False:
+            print_board(board)
+            player = switch_player(player)
+            if human_player == player:
+                row, col = get_move(board, player)
+            else:
+                time.sleep(1)
+                row, col = get_ai_move(board, player)
+            mark(board, player, row, col)
+            clearscreen()
+        print_board(board)
+        if has_won(board, player) == True:
+            winner = player
+        else:
+            winner = 0
+    elif mode == "AI-AI":
+        player = "X"
+        while is_full(board) == False and has_won(board,player) == False:
+            print_board(board)
+            player = switch_player(player)
+            row, col = get_ai_move(board, player)
+            mark(board, player, row, col)
+            time.sleep(1)
+            clearscreen()
+        print_board(board)
+        if has_won(board, player) == True:
+            winner = player
+        else:
+            winner = 0
+    print_result(winner)    
     return
 
+
+
+def choose_mode():
+    while True:
+        options = "1234"
+        choose_mode = input("Choose mode:\n1:   2 players (human vs. human)\n2:   human vs. AI\n3:   AI vs. human\n4:   AI. vs. AI")
+        choose_mode = choose_mode.upper()
+        if choose_mode == "QUIT":
+            quit()
+        if choose_mode == "" or len(choose_mode) !=1 or not choose_mode in options:
+            print("Invalid input, please type 1, 2, 3, or 4!")
+            continue
+        if choose_mode == "1":
+            return "HUMAN-HUMAN"
+        elif choose_mode == "2":
+            return "HUMAN-AI"
+        elif choose_mode == "3":
+            return "AI-HUMAN"
+        elif choose_mode == "4":
+            return "AI-AI"
+
 def main_menu():
-    tictactoe_game('HUMAN-HUMAN')
+    tictactoe_game()
 
 if __name__ == '__main__':
     main_menu()
