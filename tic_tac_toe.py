@@ -1,4 +1,4 @@
-from emoji import emojize
+#from emoji import emojize
 
 def get_player():
     while True:
@@ -9,9 +9,9 @@ def get_player():
             print("Invalid input, please type B or A")
             continue
         if choose_player == "A":
-            player = "X"
-        else:
             player = "O"
+        else:
+            player = "X"
         return player
 
 def init_board():
@@ -64,12 +64,23 @@ def mark(board, player, row, col):
 
 def has_won(board, player):
     """Returns True if player has won the game."""
-    return False
+    board[0][0]
+    if "".join(board[0]) == (player * 3) or "".join(board[1]) == (player * 3) or "".join(board[2]) == (player * 3):
+        return True
+    elif "".join(board[0][0] + board[1][0] + board[2][0]) == (player * 3) or "".join(board[0][1] + board[1][1] + board[2][1]) == (player * 3) or "".join(board[0][2] + board[1][2] + board[2][2]) == (player * 3):
+        return True
+    elif "".join(board[0][0] + board[1][1] + board[2][2]) == (player * 3) or "".join(board[0][2] + board[1][1] + board[2][0]) == (player * 3):
+        return True
+    else:
+        return False
 
 
 def is_full(board):
     """Returns True if board is full."""
-    return False
+    if "." == (board[0][0] or board[0][1] or board[0][2] or board[1][0] or board[1][1] or board[1][2] or board[2][0] or board[2][1] or board[2][2]):
+        return False
+    else:
+        return True
 
 
 def print_board(board):
@@ -90,19 +101,20 @@ def print_result(winner):
     pass
 
 
+
 def tictactoe_game(mode='HUMAN-HUMAN'):
     board = init_board()
     player = get_player()
     # use get_move(), mark(), has_won(), is_full(), and print_board() to create game logic
     # ez egy komment!
-    while is_full(board) == False:
+    while is_full(board) == False and has_won(board,player) == False:
+        player = switch_player(player)
         print_board(board)
         row, col = get_move(board, player)
         mark(board, player, row, col)
-        player = switch_player(player)
-        is_full(board)
-        has_won(board,player)
-
+    print_board(board)
+    print("Game Over")
+    return
 
 def main_menu():
     tictactoe_game('HUMAN-HUMAN')
