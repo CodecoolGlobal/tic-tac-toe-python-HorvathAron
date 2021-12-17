@@ -73,8 +73,11 @@ def can_win(board, player):
             if copy_board[i][j] != "  ":
                 continue 
             else:
+                mark(copy_board, player, i, j)
                 if has_won(copy_board, player):
                     return i, j
+                else:
+                    copy_board[i][j] = "  "
 
 def cell_priority(board):
     corners = [(0, 0), (0,2), (2,0), (2,2)]
@@ -105,9 +108,10 @@ def get_ai_move(board, player):
         if move != None:
             row, col = move
             return row, col
-        move = cell_priority(board)
-        row, col = move
-        return row, col
+        else:
+            move = cell_priority(board)
+            row, col = move
+            return row, col
 
 
 def mark(board, player, row, col):
